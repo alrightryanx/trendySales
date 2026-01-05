@@ -10,6 +10,9 @@ import {
   TrendingUp, Cloud
 } from 'lucide-react';
 import Ticker from '@/components/Ticker';
+import TrendInsights from '@/components/TrendInsights';
+import OpportunityCards from '@/components/OpportunityCards';
+import CategoryHeatmap from '@/components/CategoryHeatmap';
 
 // --- Types ---
 type TrendMetric = {
