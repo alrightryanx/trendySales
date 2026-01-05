@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
+import { useRouter } from 'next/navigation';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { 
-  Activity, Zap, Globe, Layers, Terminal, 
+import {
+  Activity, Zap, Globe, Layers, Terminal,
   TrendingUp, Cloud
 } from 'lucide-react';
+import Ticker from '@/components/Ticker';
 
 // --- Types ---
 type TrendMetric = {
@@ -43,6 +45,7 @@ type CloudItem = {
 };
 
 export default function Dashboard() {
+  const router = useRouter();
   const [trends, setTrends] = useState<TrendMetric[]>([]);
   const [platforms, setPlatforms] = useState<PlatformData[]>([]);
   const [signals, setSignals] = useState<Signal[]>([]);
@@ -90,6 +93,10 @@ export default function Dashboard() {
     } catch (e) { console.error("Keyword Fetch Error", e); }
   };
 
+  const handleItemClick = (keyword: string) => {
+    router.push(`/items/${encodeURIComponent(keyword)}`);
+  };
+
   useEffect(() => {
     // Initial Load - Fire all requests in parallel
     fetchSignals();
@@ -118,9 +125,12 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-black text-slate-300 font-mono text-sm selection:bg-yellow-500/30 selection:text-yellow-200">
-      
+
+      {/* --- TICKER --- */}
+      <Ticker />
+
       {/* --- HEADER --- */}
-      <header className="border-b border-white/10 bg-black/50 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-white/10 bg-black/50 backdrop-blur-sm sticky top-12 z-50">
         <div className="max-w-[1600px] mx-auto px-6 h-14 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="w-3 h-3 bg-yellow-500 rounded-sm animate-pulse" />
@@ -128,19 +138,42 @@ export default function Dashboard() {
               Omniscient <span className="text-yellow-500">PRIME</span>
             </h1>
           </div>
-          
-          <div className="flex items-center gap-6 text-xs text-slate-500 uppercase tracking-wider">
-             <div className="flex items-center gap-2">
-               <Activity className="w-4 h-4 text-cyan-500" />
-               <span>Nodes: {pulse?.scanned_nodes || "---"}</span>
-             </div>
-             <div className="flex items-center gap-2">
-               <Layers className="w-4 h-4 text-purple-500" />
-               <span>Narratives: {pulse?.active_narratives || "---"}</span>
-             </div>
-             <div className="px-2 py-1 bg-white/5 border border-white/10 text-white rounded-sm">
-               STATUS: {pulse?.system_status || "INIT"}
-             </div>
+
+          <div className="flex items-center gap-6">
+            <nav className="flex items-center gap-4">
+              <a
+                href="/"
+                className="text-xs text-yellow-500 uppercase tracking-wider hover:text-yellow-400 transition-colors"
+              >
+                Dashboard
+              </a>
+              <a
+                href="/arbitrage"
+                className="text-xs text-slate-500 uppercase tracking-wider hover:text-slate-300 transition-colors"
+              >
+                Arbitrage
+              </a>
+              <a
+                href="/niche"
+                className="text-xs text-slate-500 uppercase tracking-wider hover:text-slate-300 transition-colors"
+              >
+                Niche Hunter
+              </a>
+            </nav>
+
+            <div className="flex items-center gap-4 text-xs text-slate-500 uppercase tracking-wider">
+               <div className="flex items-center gap-2">
+                 <Activity className="w-4 h-4 text-cyan-500" />
+                 <span>Nodes: {pulse?.scanned_nodes || "---"}</span>
+               </div>
+               <div className="flex items-center gap-2">
+                 <Layers className="w-4 h-4 text-purple-500" />
+                 <span>Narratives: {pulse?.active_narratives || "---"}</span>
+               </div>
+               <div className="px-2 py-1 bg-white/5 border border-white/10 text-white rounded-sm">
+                 STATUS: {pulse?.system_status || "INIT"}
+               </div>
+            </div>
           </div>
         </div>
       </header>
@@ -157,7 +190,11 @@ export default function Dashboard() {
             <div className="space-y-4">
               {trends.length === 0 ? <div className="text-xs text-slate-600 animate-pulse">Scanning eBay Nodes (Approx 5s)...</div> : null}
               {trends.map((t, i) => (
-                <div key={i} className="group relative p-3 border border-white/5 hover:border-yellow-500/50 bg-white/0 hover:bg-white/5 transition-all cursor-pointer">
+                <div
+                  key={i}
+                  onClick={() => handleItemClick(t.keyword)}
+                  className="group relative p-3 border border-white/5 hover:border-yellow-500/50 bg-white/0 hover:bg-white/5 transition-all cursor-pointer"
+                >
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-white font-bold">{t.keyword}</span>
                     <span className={`text-xs px-1.5 py-0.5 border ${t.velocity > 50 ? 'border-cyan-500/30 text-cyan-400' : 'border-slate-500/30 text-slate-400'}`}>
@@ -170,8 +207,8 @@ export default function Dashboard() {
                   </div>
                   {/* Progress Bar for STR */}
                   <div className="w-full h-0.5 bg-white/10 mt-3">
-                    <div 
-                      className="h-full bg-cyan-500 group-hover:bg-cyan-400 transition-all" 
+                    <div
+                      className="h-full bg-cyan-500 group-hover:bg-cyan-400 transition-all"
                       style={{ width: `${Math.min(t.velocity, 100)}%` }}
                     />
                   </div>
