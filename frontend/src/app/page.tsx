@@ -47,7 +47,10 @@ type CloudItem = {
   value: number;
 };
 
+type ViewType = 'dashboard' | 'trends' | 'arbitrage' | 'niche';
+
 export default function Dashboard() {
+  const [currentView, setCurrentView] = useState<ViewType>('dashboard');
   const router = useRouter();
   const [trends, setTrends] = useState<TrendMetric[]>([]);
   const [platforms, setPlatforms] = useState<PlatformData[]>([]);
