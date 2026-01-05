@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+sqlalchemy
+requests
+beautifulsoup4
+pydantic
+python-multipart
+# praw  # Uncomment if we get a Reddit API key later, for now we might use public JSON or simple requests

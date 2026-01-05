@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ededed;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Courier New', Courier, monospace; /* Fallback to a safe mono font */
+}
+
+/* Custom Scrollbar for the Terminal Feed */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #0f0f0f; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #333; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
